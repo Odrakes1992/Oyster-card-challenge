@@ -1,6 +1,7 @@
 class Oystercard
 
   DEFAULT_MAXIMUM = 90 
+  DEFAULT_FARE = 2
 
   attr_reader :balance
 
@@ -12,6 +13,10 @@ class Oystercard
     @monies = monies 
     fail "Topping up this amount will take you over the £#{DEFAULT_MAXIMUM} maximum" if over_maximum?
     @balance += monies
+  end
+
+  def deduct_fare
+    @balance -= DEFAULT_FARE
   end
 
 private 

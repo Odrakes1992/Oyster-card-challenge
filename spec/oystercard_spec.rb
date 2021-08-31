@@ -6,16 +6,16 @@ it {is_expected.to respond_to(:top_up).with(1).argument}
 
 #let(:monies) {double :monies}
 
-describe "#top_up" do
-  it "should add money to oyster card" do 
-  expect(subject.top_up(1)).to eq(subject.balance)
-  end 
-end
-
 describe "#balance" do
   it "should start with a balance of zero" do
   expect(subject.balance).to eq(0)
   end
+end
+
+describe "#top_up" do
+  it "should add money to oyster card" do 
+  expect(subject.top_up(1)).to eq(subject.balance)
+  end 
 end
 
 describe "#top_up error" do
@@ -24,6 +24,13 @@ describe "#top_up error" do
   message = "Topping up this amount will take you over the £#{maximum_balance} maximum"
   subject.top_up maximum_balance
   expect{subject.top_up(1)}.to raise_error(message)
+  end
+end
+
+describe "#deduct_fare" do
+  it "should deduct the fare from the balance" do
+  fare = Oystercard::DEFAULT_FARE
+  expect{subject.deduct_fare}.to change{subject.balance}.by -fare
   end
 end
 

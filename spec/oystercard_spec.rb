@@ -42,9 +42,6 @@ describe "#top_up_required" do
     @subject = Oystercard.new
     @subject.top_up(Oystercard::DEFAULT_MAXIMUM)
     end
-    it "should deduct the fare from the balance" do
-    expect{@subject.deduct_fare(3)}.to change{@subject.balance}.by -3
-    end
     it "should be on journey" do
     @subject.touch_in
     expect(@subject.on_journey).to eq true
@@ -60,10 +57,12 @@ end
 
   describe "#touch_out" do 
     it "should not be on journey" do
+    minimum_fare = Oystercard::MINIMUM_AMOUNT
     subject.top_up(Oystercard::DEFAULT_MAXIMUM)
     subject.touch_in
     subject.touch_out
     expect(subject.on_journey).to eq false
+    expect{subject.touch_out}.to change{subject.balance}.by -minimum_fare
     end
   end
 

@@ -6,8 +6,7 @@ describe Oystercard do
 # it {is_expected.to respond_to(:touch_in)}
 # it {is_expected.to respond_to(:touch_out)}
 
-
-#let(:monies) {double :monies}
+let(:entry_station) {double :entry_station}
 
 describe "#balance" do
   it "should start with a balance of zero" do
@@ -43,15 +42,15 @@ describe "#top_up_required" do
     @subject.top_up(Oystercard::DEFAULT_MAXIMUM)
     end
     it "should be on journey" do
-    @subject.touch_in
-    expect(@subject.on_journey).to eq true
+    @subject.touch_in(entry_station)
+    expect(@subject).to be_on_a_journey
     end
 end
 
   describe "#insufficient_funds" do
     it "should throw up error when funds are insufficient" do
     message = "You have insufficient funds to travel"
-    expect{subject.touch_in}.to raise_error(message)
+    expect{subject.touch_in(entry_station)}.to raise_error(message)
     end 
   end 
 
@@ -59,11 +58,20 @@ end
     it "should not be on journey" do
     minimum_fare = Oystercard::MINIMUM_AMOUNT
     subject.top_up(Oystercard::DEFAULT_MAXIMUM)
-    subject.touch_in
+    subject.touch_in(entry_station)
     subject.touch_out
-    expect(subject.on_journey).to eq false
+    expect(subject).to_not be_on_a_journey
     expect{subject.touch_out}.to change{subject.balance}.by -minimum_fare
     end
   end
+
+  describe "#remembers_entry_station"do
+    it "should remember the entry station on touch in" do 
+    subject.top_up(30)
+    subject.touch_in(entry_station)
+    expect(subject.entry_station).to eq entry_station
+    end
+  end
+
 
 end
